@@ -1,6 +1,6 @@
 class MaxHeap:
     def __init__(self, items=[]):
-        #we don't use the first index
+        #we don't use the first index because of left/right child index calculations
         self.heap = [0]
         for i in items:
             self.heap.append(i)
@@ -56,17 +56,27 @@ class MaxHeap:
         leftChild = index*2
         rightChild = index*2+1
         largest = index
-        #check index is within bounds and smaller than the left child
-        if len(self.heap) > leftChild and self.heap[largest] < self.heap[leftChild]:
-            #swap values
-            self.swap(self.heap[largest], self.heap[leftChild])
-            #bubbleDown the new leftChild value
-            self.bubbleDown(leftChild)
-        #check if in bounds and smaller than right child
-        elif len(self.heap) > rightChild and self.heap[largest] < self.heap[rightChild]:
-            #swap values
-            self.swap(self.heap[largest], self.heap[rightChild])
-            #bubbleDown the new rightChild value
-            self.bubbleDown(rightChild)
+        #determine which child to swap with
+        if len(self.heap) > rightChild:
+            #if the current element is larger than both the children we don't need to bubble down
+            if self.heap[index] > self.heap[leftChild] and self.heap[index] > self.heap[rightChild]:
+                return
+            elif self.heap[leftChild] > self.heap[rightChild]:
+                largestChild = leftChild
+                print("largest child:" , self.heap[largestChild])
+            else:
+                largestChild = rightChild
+                print("largest child:" , self.heap[largestChild])
+        #needed in the case where there is only one child (must be left child)
+        elif len(self.heap) == rightChild:
+            if self.heap[index] > self.heap[leftChild]:
+                return
+            else:
+                largestChild = leftChild
         else:
             return
+
+        #swap values
+        self.swap(largest, largestChild)
+        #bubbleDown the new largestChild value
+        self.bubbleDown(largestChild)
